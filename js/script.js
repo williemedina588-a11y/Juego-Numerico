@@ -3,14 +3,75 @@ const campoNumero = document.getElementById("campoNumero");
 const btnAdivinar = document.getElementById("btnAdivinar");
 const btnNueva = document.getElementById("btnNueva");
 const mensaje = document.getElementById("mensaje");
-const intentos = document.getElementById("intentos");
+const bolas = document.querySelectorAll(".bola");
+const sinPartidas = document.getElementById("sinPartidas");
+const listaPartidas = document.getElementById("listaPartidas");
+const btnBorrar = document.getElementById("btnBorrar");
 
 // 2. Variables del juego
 let numeroSecreto;
 let intentosRestantes;
 let terminada;
+let partidas = []; // historial de partidas terminadas
 
-// 3. Función que deja el juego listo para empezar
+// 3. Historial: leer, guardar y mostrar
+function cargarPartidas() {
+  try {
+    const guardado = localStorage.getItem("partidas");
+    partidas = guardado ? JSON.parse(guardado) : [];
+  } catch (error) {
+    partidas = [];
+  }
+}
+
+function guardarPartidas() {
+  try {
+    localStorage.setItem("partidas", JSON.stringify(partidas));
+  } catch (error) {
+    console.log("No se pudo guardar el historial");
+  }
+}
+
+function pintarPartidas() {
+  listaPartidas.innerHTML = "";
+
+  partidas.forEach(function (partida) {
+    const li = document.createElement("li");
+    li.className = partida.gano ? "gano" : "perdio";
+
+    if (partida.gano) {
+      li.textContent = "El número era " + partida.numero + ". Ganaste en " +
+        partida.intentos + (partida.intentos === 1 ? " intento." : " intentos.");
+    } else {
+      li.textContent = "El número era " + partida.numero + ". Perdiste.";
+    }
+
+    listaPartidas.appendChild(li);
+  });
+
+  sinPartidas.hidden = partidas.length > 0;
+  btnBorrar.hidden = partidas.length === 0;
+}
+
+// Anota la partida que acaba de terminar
+function registrarPartida(gano) {
+  partidas.push({
+    numero: numeroSecreto,
+    intentos: 3 - intentosRestantes,
+    gano: gano
+  });
+  guardarPartidas();
+  pintarPartidas();
+}
+
+// Enciende o apaga las bolas según los intentos restantes
+function pintarIntentos() {
+  bolas.forEach(function (bola, i) {
+    bola.classList.toggle("apagada", i >= intentosRestantes);
+  });
+}
+
+// 4. Función que deja el juego listo para empezar
 function nuevaPartida() {
   numeroSecreto = Math.floor(Math.random() * 10) + 1;
   intentosRestantes = 3;
@@ -19,11 +80,11 @@ function nuevaPartida() {
   campoNumero.value = "";
   campoNumero.disabled = false;
   btnAdivinar.disabled = false;
-  intentos.textContent = intentosRestantes;
+  pintarIntentos();
   mensaje.textContent = "Escribe un número y pulsa Adivinar.";
   mensaje.className = "";
 
-  console.log("Número secreto (solo para pruebas):", numeroSecreto);
+  // console.log("Número secreto (solo para pruebas):", numeroSecreto);
 }
 
 // Muestra un mensaje; "clase" puede ser "ok" (verde) o "mal" (rojo)
@@ -61,14 +122,16 @@ function adivinar() {
 
   // Cada respuesta válida consume un intento
   intentosRestantes--;
-  intentos.textContent = intentosRestantes;
+  pintarIntentos();
 
   // Primero se comprueba el acierto, aunque sea el último intento
   if (numero === numeroSecreto) {
     mostrar("¡Felicidades! Adivinaste el número secreto", "ok");
+    registrarPartida(true);
     terminar();
   } else if (intentosRestantes === 0) {
     mostrar("Has perdido. El número secreto era " + numeroSecreto, "mal");
+    registrarPartida(false);
     terminar();
   } else if (numero < numeroSecreto) {
     mostrar("El número secreto es mayor.");
@@ -76,20 +139,20 @@ function adivinar() {
     mostrar("El número secreto es menor.");
   }
 
-    campoNumero.value = "";
+  campoNumero.value = "";
   if (!terminada) campoNumero.focus();
 }
 
-// 4. El botón "Nueva partida" y el inicio automático
+// 5. Eventos e inicio
 btnNueva.addEventListener("click", nuevaPartida);
-nuevaPartida();
-
 btnAdivinar.addEventListener("click", adivinar);
 campoNumero.addEventListener("keydown", function (e) {
   if (e.key === "Enter") adivinar();
 });
-
-btnAdivinar.addEventListener("click", adivinar);
-campoNumero.addEventListener("keydown", function (e) {
-  if (e.key === "Enter") adivinar();
+btnBorrar.addEventListener("click", function () {
+  if (confirm("¿Seguro que quieres borrar el historial?")) {
+    partidas = [];
+    guardarPartidas();
+    pintarPartidas();
+  }
 });
