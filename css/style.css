@@ -1,7 +1,11 @@
+[hidden] {
+  display: none !important;
+}
+
 body {
-  font-family: system-ui, sans-serif;
-  background: #e8eefc;
-  color: #16213e;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: #0f1530;
+  color: #eaf0ff;
   margin: 0;
   min-height: 100vh;
   display: grid;
@@ -11,86 +15,185 @@ body {
 
 main {
   width: 100%;
-  max-width: 420px;
-  background: #ffffff;
-  border-radius: 20px;
+  max-width: 440px;
+  background: #19213f;
+  border: 2px solid #2c3764;
+  border-radius: 24px;
   padding: 28px 24px;
-  text-align: center;
 }
 
 h1 {
-  margin: 0 0 6px;
+  margin: 0 0 4px;
+  font-size: 2rem;
 }
 
 .subtitulo {
-  margin: 0 0 20px;
-  color: #5b6785;
+  margin: 0 0 22px;
+  color: #9aa8d0;
+}
+
+/* Recuadro "?" y bolas de intentos */
+.tablero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.secreto {
+  flex: none;
+  width: 92px;
+  height: 92px;
+  border-radius: 20px;
+  background: #8ea0ff;
+  color: #0f1530;
+  display: grid;
+  place-items: center;
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.secreto.reveal {
+  animation: pop 0.35s ease-out;
+}
+
+@keyframes pop {
+  from { transform: scale(0.8) rotate(-6deg); }
+  to   { transform: none; }
 }
 
 .intentos {
-  font-size: 1.1rem;
+  display: grid;
+  gap: 8px;
+  color: #9aa8d0;
 }
 
+#bolas {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bola {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #a78bfa;
+  border: 2px solid #a78bfa;
+  transition: background 0.3s, opacity 0.3s;
+}
+
+.bola.apagada {
+  background: transparent;
+  border-color: #2c3764;
+  opacity: 0.7;
+}
+
+/* Campo y botones */
 .entrada {
   display: flex;
   gap: 10px;
-  margin: 16px 0;
 }
 
 input {
   flex: 1;
   min-width: 0;
-  font-size: 1.2rem;
-  padding: 12px;
-  border: 2px solid #c9d3ee;
-  border-radius: 12px;
+  font-size: 1.25rem;
+  padding: 12px 14px;
+  border: 2px solid #2c3764;
+  border-radius: 14px;
+  background: #0f1530;
+  color: #eaf0ff;
 }
 
-button {
-  font-size: 1rem;
-  font-weight: bold;
-  padding: 12px 18px;
-  border: none;
-  border-radius: 12px;
-  background: #3b4cca;
-  color: #ffffff;
-  cursor: pointer;
-}
-
+input:disabled,
 button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-#btnNueva {
-  background: transparent;
-  color: #16213e;
-  border: 2px solid #c9d3ee;
-  width: 100%;
-  margin-top: 8px;
+button {
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 12px 20px;
+  min-height: 48px;
+  border: none;
+  border-radius: 14px;
+  background: #8ea0ff;
+  color: #0f1530;
+  cursor: pointer;
 }
 
+:focus-visible {
+  outline: 3px solid #8ea0ff;
+  outline-offset: 2px;
+}
+
+#btnNueva {
+  background: transparent;
+  color: #eaf0ff;
+  border: 2px solid #2c3764;
+  width: 100%;
+  margin-top: 4px;
+}
+
+/* Mensaje */
 #mensaje {
-  padding: 12px;
-  border-radius: 12px;
-  background: #eef1fb;
+  margin: 16px 0 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #222c52;
   font-weight: bold;
 }
 
 #mensaje.ok {
-  background: #dcf5ea;
-  color: #12805c;
+  background: #12382e;
+  color: #5fdcae;
 }
 
 #mensaje.mal {
-  background: #fde4e2;
-  color: #b3261e;
+  background: #40191a;
+  color: #ff8f87;
 }
 
+/* Probados y marcador */
+.probados {
+  margin: 14px 0;
+  color: #9aa8d0;
+}
 
+.probados b {
+  color: #eaf0ff;
+}
+
+.marcador {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.marcador div {
+  background: #222c52;
+  border-radius: 14px;
+  padding: 10px 8px;
+  text-align: center;
+  display: grid;
+  gap: 2px;
+}
+
+.marcador span {
+  color: #9aa8d0;
+  font-size: 0.8rem;
+}
+
+.marcador strong {
+  font-size: 1.4rem;
+}
+
+/* Historial de partidas */
 .partidas {
   margin-top: 24px;
-  text-align: left;
 }
 
 .partidas h2 {
@@ -99,7 +202,7 @@ button:disabled {
 }
 
 #sinPartidas {
-  color: #5b6785;
+  color: #9aa8d0;
 }
 
 #listaPartidas {
@@ -112,45 +215,51 @@ button:disabled {
 }
 
 #listaPartidas li.gano {
-  color: #12805c;
+  color: #5fdcae;
 }
 
 #listaPartidas li.perdio {
-  color: #b3261e;
+  color: #ff8f87;
+}
+
+/* Borrar historial y dificultad, en la misma fila */
+.acciones {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 #btnBorrar {
   background: transparent;
-  color: #5b6785;
-  border: 2px solid #c9d3ee;
+  color: #9aa8d0;
+  border: 2px solid #2c3764;
   padding: 8px 14px;
   font-size: 0.9rem;
+  min-height: 40px;
 }
 
-.intentos {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  font-size: 1.1rem;
+#nivel {
+  margin-left: auto;
+  min-height: 40px;
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: bold;
+  padding: 8px 36px 8px 16px;
+  border: 2px solid #a78bfa;
+  border-radius: 999px;
+  background-color: #2a2152;
+  color: #d8ccff;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23a78bfa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
 }
 
-#bolas {
-  display: flex;
-  gap: 5.5px;
-}
-
-.bola {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #7c3aed;
-  border: 2px solid #7c3aed;
-  transition: background 0.3s, opacity 0.3s;
-}
-
-.bola.apagada {
-  background: transparent;
-  border-color: #c9d3ee;
-  opacity: 0.6;
+@media (prefers-reduced-motion: reduce) {
+  .secreto.reveal {
+    animation: none;
+  }
 }
