@@ -523,3 +523,22 @@ body main.vibrar {
     animation-name: cartel-fade !important;
   }
 }
+
+.btn-inicio {
+  display: inline-block;
+  margin-bottom: 14px;
+  padding: 8px 16px;
+  border: 2px solid var(--acento);
+  border-radius: 999px;
+  color: var(--texto);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: bold;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-inicio:hover,
+.btn-inicio:focus-visible {
+  background: var(--acento);
+  color: var(--sobre-acento);
+}
