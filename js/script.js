@@ -1,4 +1,7 @@
 // 1. Referencias a los elementos del HTML
+const tarjeta = document.querySelector("main");
+const efecto = document.getElementById("efecto");
+const cartel = document.getElementById("cartel");
 const campoNumero = document.getElementById("campoNumero");
 const btnAdivinar = document.getElementById("btnAdivinar");
 const btnNueva = document.getElementById("btnNueva");
@@ -9,7 +12,6 @@ const contBolas = document.getElementById("bolas");
 const secreto = document.getElementById("secreto");
 const probados = document.getElementById("probados");
 const ganadasEl = document.getElementById("ganadas");
-// const rachaEl = document.getElementById("racha");
 const perdidasEl = document.getElementById("perdidas");
 const mejorRachaEl = document.getElementById("mejorRacha");
 const sinPartidas = document.getElementById("sinPartidas");
@@ -18,9 +20,9 @@ const btnBorrar = document.getElementById("btnBorrar");
 
 // 2. Niveles de dificultad
 const NIVELES = {
-  facil:   { nombre: "Fácil",   max: 10,  intentos: 3 },
-  medio:   { nombre: "Medio",   max: 50,  intentos: 5 },
-  dificil: { nombre: "Difícil", max: 100, intentos: 7 }
+  facil:   { nombre: "Fácil",   max: 10,  intentos: 3, cartel: "FÁCIL" },
+  medio:   { nombre: "Medio",   max: 50,  intentos: 5, cartel: "MEDIO" },
+  dificil: { nombre: "Difícil", max: 100, intentos: 7, cartel: "🔥 DIFÍCIL 🔥" }
 };
 
 // 3. Variables del juego
@@ -33,7 +35,35 @@ let numerosProbados = []; // números probados en la partida actual
 let bolas = [];
 let partidas = []; // historial de partidas terminadas
 
-// 4. Historial: leer, guardar y mostrar
+// 4. Efectos de pantalla
+// Reinicia una animación: quita la clase, fuerza el recálculo y la vuelve a poner
+function animar(elemento, clase) {
+  elemento.classList.remove(clase);
+  void elemento.offsetWidth;
+  elemento.classList.add(clase);
+}
+
+// La tarjeta vibra (número incorrecto)
+function vibrar() {
+  animar(tarjeta, "vibrar");
+}
+
+// Destello de pantalla y, si se indica texto, un cartel grande en el centro.
+// tipo puede ser: "rojo", "verde", "facil", "medio" o "dificil"
+function efectoPantalla(tipo, texto) {
+  efecto.className = "efecto";
+  void efecto.offsetWidth;
+  efecto.classList.add("e-" + tipo);
+
+  if (texto) {
+    cartel.textContent = texto;
+    cartel.className = "cartel";
+    void cartel.offsetWidth;
+    cartel.classList.add("c-" + tipo);
+  }
+}
+
+// 5. Historial: leer, guardar y mostrar
 function cargarPartidas() {
   try {
     const guardado = localStorage.getItem("partidas");
@@ -118,13 +148,13 @@ function registrarPartida(gano) {
   pintarPartidas();
 }
 
-// 5. Números probados en la partida actual
+// 6. Números probados en la partida actual
 function pintarProbados() {
   const lista = numerosProbados.length ? numerosProbados.join(", ") : "—";
   probados.innerHTML = "Probados: <b>" + lista + "</b>";
 }
 
-// 6. Bolas de intentos
+// 7. Bolas de intentos
 function crearBolas() {
   contBolas.innerHTML = "";
   bolas = [];
@@ -144,10 +174,13 @@ function pintarIntentos() {
   });
 }
 
-// 7. Deja el juego listo para empezar, según el nivel elegido
+// 8. Deja el juego listo para empezar, según el nivel elegido
 function nuevaPartida() {
   nivelActual = selectNivel.value;
   const nivel = NIVELES[nivelActual];
+
+  // El CSS usa este atributo para cambiar los colores del nivel
+  document.body.dataset.nivel = nivelActual;
 
   numeroSecreto = Math.floor(Math.random() * nivel.max) + 1;
   intentosTotales = nivel.intentos;
@@ -174,7 +207,7 @@ function nuevaPartida() {
   mensaje.textContent = "Escribe un número y pulsa Adivinar.";
   mensaje.className = "";
 
-     console.log("Número secreto (solo para pruebas):", numeroSecreto);
+ //  console.log("Número secreto (solo para pruebas):", numeroSecreto);
 }
 
 // Muestra un mensaje; "clase" puede ser "ok" (verde) o "mal" (rojo)
@@ -196,7 +229,7 @@ function terminar() {
   secreto.classList.add("reveal");
 }
 
-// 8. Se ejecuta al pulsar "Adivinar"
+// 9. Se ejecuta al pulsar "Adivinar"
 function adivinar() {
   if (terminada) return;
 
@@ -226,25 +259,37 @@ function adivinar() {
   // Primero se comprueba el acierto, aunque sea el último intento
   if (numero === numeroSecreto) {
     mostrar("¡Felicidades! Adivinaste el número secreto", "ok");
+    efectoPantalla("verde", "¡GANASTE!");
     registrarPartida(true);
     terminar();
   } else if (intentosRestantes === 0) {
     mostrar("Has perdido. El número secreto era " + numeroSecreto, "mal");
+    efectoPantalla("rojo", "PERDISTE");
+    vibrar();
     registrarPartida(false);
     terminar();
-  } else if (numero < numeroSecreto) {
-    mostrar("El número secreto es mayor.");
   } else {
-    mostrar("El número secreto es menor.");
+    // Número incorrecto: pista, pantalla roja y vibración
+    if (numero < numeroSecreto) {
+      mostrar("El número secreto es mayor.");
+    } else {
+      mostrar("El número secreto es menor.");
+    }
+    efectoPantalla("rojo");
+    vibrar();
   }
 
   campoNumero.value = "";
   if (!terminada) campoNumero.focus();
 }
 
-// 9. Eventos e inicio
+// 10. Eventos e inicio
 btnNueva.addEventListener("click", nuevaPartida);
-selectNivel.addEventListener("change", nuevaPartida);
+selectNivel.addEventListener("change", function () {
+  nuevaPartida();
+  efectoPantalla(nivelActual, NIVELES[nivelActual].cartel);
+  if (nivelActual === "dificil") vibrar();
+});
 btnAdivinar.addEventListener("click", adivinar);
 campoNumero.addEventListener("keydown", function (e) {
   if (e.key === "Enter") adivinar();

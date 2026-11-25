@@ -2,10 +2,54 @@
   display: none !important;
 }
 
+/* ===== Colores de cada nivel =====
+   Fácil (morado) es el predeterminado. El JavaScript pone
+   body[data-nivel="..."] y los colores cambian solos. */
+:root {
+  --fondo: #140f2e;
+  --halo: rgba(124, 58, 237, 0.28);
+  --tarjeta: #1e1745;
+  --borde: #3a2d7a;
+  --suave: #2a2160;
+  --texto: #f1ecff;
+  --apagado: #a79bd8;
+  --acento: #a78bfa;
+  --sobre-acento: #140f2e;
+  --brillo: rgba(167, 139, 250, 0.25);
+}
+
+body[data-nivel="medio"] {
+  --fondo: #17120a;
+  --halo: rgba(251, 191, 36, 0.16);
+  --tarjeta: #231a0b;
+  --borde: #5c4515;
+  --suave: #33260e;
+  --texto: #fff6dd;
+  --apagado: #d1b777;
+  --acento: #fbbf24;
+  --sobre-acento: #1a1203;
+  --brillo: rgba(251, 191, 36, 0.22);
+}
+
+body[data-nivel="dificil"] {
+  --fondo: #080102;
+  --halo: rgba(255, 43, 61, 0.22);
+  --tarjeta: #140407;
+  --borde: #6b0f1a;
+  --suave: #240709;
+  --texto: #ffe9e9;
+  --apagado: #cf8a90;
+  --acento: #ff2b3d;
+  --sobre-acento: #120002;
+  --brillo: rgba(255, 43, 61, 0.4);
+}
+
+/* ===== Base ===== */
 body {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
-  background: #0f1530;
-  color: #eaf0ff;
+  background: radial-gradient(ellipse at 50% 0%, var(--halo), transparent 65%), var(--fondo);
+  background-attachment: fixed;
+  color: var(--texto);
   margin: 0;
   min-height: 100vh;
   display: grid;
@@ -16,10 +60,12 @@ body {
 main {
   width: 100%;
   max-width: 440px;
-  background: #19213f;
-  border: 2px solid #2c3764;
+  background: var(--tarjeta);
+  border: 2px solid var(--borde);
   border-radius: 24px;
   padding: 28px 24px;
+  box-shadow: 0 0 28px var(--brillo);
+  transition: background-color 0.4s, border-color 0.4s, box-shadow 0.4s;
 }
 
 h1 {
@@ -29,10 +75,10 @@ h1 {
 
 .subtitulo {
   margin: 0 0 22px;
-  color: #9aa8d0;
+  color: var(--apagado);
 }
 
-/* Recuadro "?" y bolas de intentos */
+/* ===== Recuadro "?" y bolas de intentos ===== */
 .tablero {
   display: flex;
   align-items: center;
@@ -45,12 +91,13 @@ h1 {
   width: 92px;
   height: 92px;
   border-radius: 20px;
-  background: #8ea0ff;
-  color: #0f1530;
+  background: var(--acento);
+  color: var(--sobre-acento);
   display: grid;
   place-items: center;
   font-size: 3rem;
   font-weight: bold;
+  transition: background-color 0.4s;
 }
 
 .secreto.reveal {
@@ -65,7 +112,7 @@ h1 {
 .intentos {
   display: grid;
   gap: 8px;
-  color: #9aa8d0;
+  color: var(--apagado);
 }
 
 #bolas {
@@ -78,18 +125,18 @@ h1 {
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #a78bfa;
-  border: 2px solid #a78bfa;
+  background: var(--acento);
+  border: 2px solid var(--acento);
   transition: background 0.3s, opacity 0.3s;
 }
 
 .bola.apagada {
   background: transparent;
-  border-color: #2c3764;
+  border-color: var(--borde);
   opacity: 0.7;
 }
 
-/* Campo y botones */
+/* ===== Campo y botones ===== */
 .entrada {
   display: flex;
   gap: 10px;
@@ -100,10 +147,10 @@ input {
   min-width: 0;
   font-size: 1.25rem;
   padding: 12px 14px;
-  border: 2px solid #2c3764;
+  border: 2px solid var(--borde);
   border-radius: 14px;
-  background: #0f1530;
-  color: #eaf0ff;
+  background: var(--fondo);
+  color: var(--texto);
 }
 
 input:disabled,
@@ -119,30 +166,30 @@ button {
   min-height: 48px;
   border: none;
   border-radius: 14px;
-  background: #8ea0ff;
-  color: #0f1530;
+  background: var(--acento);
+  color: var(--sobre-acento);
   cursor: pointer;
 }
 
 :focus-visible {
-  outline: 3px solid #8ea0ff;
+  outline: 3px solid var(--acento);
   outline-offset: 2px;
 }
 
 #btnNueva {
   background: transparent;
-  color: #eaf0ff;
-  border: 2px solid #2c3764;
+  color: var(--texto);
+  border: 2px solid var(--borde);
   width: 100%;
   margin-top: 4px;
 }
 
-/* Mensaje */
+/* ===== Mensaje ===== */
 #mensaje {
   margin: 16px 0 0;
   padding: 12px 14px;
   border-radius: 14px;
-  background: #222c52;
+  background: var(--suave);
   font-weight: bold;
 }
 
@@ -156,14 +203,14 @@ button {
   color: #ff8f87;
 }
 
-/* Probados y marcador */
+/* ===== Probados y marcador ===== */
 .probados {
   margin: 14px 0;
-  color: #9aa8d0;
+  color: var(--apagado);
 }
 
 .probados b {
-  color: #eaf0ff;
+  color: var(--texto);
 }
 
 .marcador {
@@ -174,7 +221,7 @@ button {
 }
 
 .marcador div {
-  background: #222c52;
+  background: var(--suave);
   border-radius: 14px;
   padding: 10px 8px;
   text-align: center;
@@ -183,7 +230,7 @@ button {
 }
 
 .marcador span {
-  color: #9aa8d0;
+  color: var(--apagado);
   font-size: 0.8rem;
 }
 
@@ -191,7 +238,7 @@ button {
   font-size: 1.4rem;
 }
 
-/* Historial de partidas */
+/* ===== Historial de partidas ===== */
 .partidas {
   margin-top: 24px;
 }
@@ -202,7 +249,7 @@ button {
 }
 
 #sinPartidas {
-  color: #9aa8d0;
+  color: var(--apagado);
 }
 
 #listaPartidas {
@@ -222,7 +269,7 @@ button {
   color: #ff8f87;
 }
 
-/* Borrar historial y dificultad, en la misma fila */
+/* ===== Borrar historial y dificultad, en la misma fila ===== */
 .acciones {
   display: flex;
   align-items: center;
@@ -232,8 +279,8 @@ button {
 
 #btnBorrar {
   background: transparent;
-  color: #9aa8d0;
-  border: 2px solid #2c3764;
+  color: var(--apagado);
+  border: 2px solid var(--borde);
   padding: 8px 14px;
   font-size: 0.9rem;
   min-height: 40px;
@@ -248,18 +295,231 @@ button {
   font-size: 0.9rem;
   font-weight: bold;
   padding: 8px 36px 8px 16px;
-  border: 2px solid #a78bfa;
+  border: 2px solid var(--acento);
   border-radius: 999px;
-  background-color: #2a2152;
-  color: #d8ccff;
+  background-color: var(--suave);
+  color: var(--texto);
   cursor: pointer;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23a78bfa' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23e8e8f0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
   background-repeat: no-repeat;
   background-position: right 14px center;
 }
 
+#nivel option {
+  background: var(--tarjeta);
+  color: var(--texto);
+}
+
+/* ===== Nivel DIFÍCIL: demoniaco ===== */
+body[data-nivel="dificil"]::before {
+  content: "";
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 26vh;
+  z-index: -1;
+  pointer-events: none;
+  transform-origin: bottom;
+  background:
+    radial-gradient(ellipse at 20% 100%, rgba(255, 90, 0, 0.55), transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(255, 30, 40, 0.6), transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgba(255, 160, 0, 0.4), transparent 55%);
+  animation: llamas 1.4s ease-in-out infinite alternate;
+}
+
+@keyframes llamas {
+  from { opacity: 0.55; transform: scaleY(0.8); }
+  to   { opacity: 1;    transform: scaleY(1.15); }
+}
+
+body[data-nivel="dificil"] main {
+  animation: latido 2.2s ease-in-out infinite;
+}
+
+@keyframes latido {
+  0%, 100% { box-shadow: 0 0 16px rgba(255, 43, 61, 0.35); }
+  50%      { box-shadow: 0 0 42px rgba(255, 43, 61, 0.85); }
+}
+
+body[data-nivel="dificil"] h1 {
+  text-shadow: 0 0 14px rgba(255, 43, 61, 0.7);
+  animation: glitch 3s infinite;
+}
+
+@keyframes glitch {
+  0%, 90%, 100% { transform: none; text-shadow: 0 0 14px rgba(255, 43, 61, 0.7); }
+  92% { transform: translate(-3px, 1px) skewX(-6deg); text-shadow: 3px 0 #ff2b3d, -3px 0 #5b0a12; }
+  94% { transform: translate(3px, -1px) skewX(6deg);  text-shadow: -3px 0 #ff2b3d, 3px 0 #5b0a12; }
+  96% { transform: none; }
+}
+
+/* ===== Efectos de pantalla ===== */
+.efecto {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes destello {
+  0%   { opacity: 0; }
+  15%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes destello-largo {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  70%  { opacity: 0.9; }
+  100% { opacity: 0; }
+}
+
+@keyframes parpadeo {
+  0%   { opacity: 0; }
+  10%  { opacity: 1; }
+  20%  { opacity: 0.2; }
+  30%  { opacity: 1; }
+  45%  { opacity: 0.3; }
+  60%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Número incorrecto o partida perdida: pantalla roja */
+.e-rojo {
+  background: radial-gradient(circle at center, rgba(255, 40, 60, 0.18) 25%, rgba(255, 20, 45, 0.7) 100%);
+  animation: destello 0.6s ease-out;
+}
+
+/* Ganaste: difuminado verde */
+.e-verde {
+  background: radial-gradient(circle at center, rgba(74, 222, 128, 0.4), rgba(34, 197, 94, 0.2) 55%, rgba(34, 197, 94, 0.45) 100%);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  animation: destello-largo 1.3s ease-out;
+}
+
+/* Cambio de nivel */
+.e-facil {
+  background: radial-gradient(circle at center, rgba(167, 139, 250, 0.45), rgba(124, 58, 237, 0.35) 100%);
+  animation: destello-largo 0.9s ease-out;
+}
+
+.e-medio {
+  background: radial-gradient(circle at center, rgba(251, 191, 36, 0.45), rgba(217, 119, 6, 0.35) 100%);
+  animation: destello-largo 0.9s ease-out;
+}
+
+.e-dificil {
+  background: radial-gradient(circle at center, rgba(0, 0, 0, 0.55), rgba(255, 20, 40, 0.8) 100%);
+  animation: parpadeo 1s linear;
+}
+
+/* ===== Cartel grande en el centro ===== */
+.cartel {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 20px;
+  font-size: clamp(2.4rem, 13vw, 6rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes cartel-pop {
+  0%   { opacity: 0; transform: scale(0.3); }
+  20%  { opacity: 1; transform: scale(1.15); }
+  35%  { transform: scale(1); }
+  75%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.1); }
+}
+
+@keyframes cartel-glitch {
+  0%   { opacity: 0; transform: scale(0.5); }
+  15%  { opacity: 1; transform: scale(1.2); }
+  20%  { transform: translate(-10px, 2px) skewX(-8deg); }
+  25%  { transform: translate(10px, -2px) skewX(8deg); }
+  30%  { transform: scale(1); }
+  75%  { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+
+@keyframes cartel-fade {
+  0%   { opacity: 0; }
+  20%  { opacity: 1; }
+  80%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.c-verde {
+  color: #4ade80;
+  text-shadow: 0 0 30px rgba(74, 222, 128, 0.9), 0 0 80px rgba(34, 197, 94, 0.6);
+  animation: cartel-pop 1.2s ease-out;
+}
+
+.c-rojo {
+  color: #ff5a67;
+  text-shadow: 0 0 30px rgba(255, 40, 60, 0.9), 0 0 70px rgba(255, 20, 45, 0.6);
+  animation: cartel-pop 1.1s ease-out;
+}
+
+.c-facil {
+  color: #c4b5fd;
+  text-shadow: 0 0 30px rgba(167, 139, 250, 0.9);
+  animation: cartel-pop 1s ease-out;
+}
+
+.c-medio {
+  color: #fbbf24;
+  text-shadow: 0 0 30px rgba(251, 191, 36, 0.9);
+  animation: cartel-pop 1s ease-out;
+}
+
+.c-dificil {
+  color: #ff2b3d;
+  text-shadow: 0 0 24px rgba(255, 43, 61, 1), 0 0 70px rgba(150, 0, 20, 0.9);
+  animation: cartel-glitch 1.4s ease-out;
+}
+
+/* ===== Vibración de la tarjeta (número incorrecto) ===== */
+body main.vibrar {
+  animation: vibrar 0.5s ease-in-out;
+}
+
+@keyframes vibrar {
+  0%, 100% { transform: none; }
+  10% { transform: translateX(-12px); }
+  20% { transform: translateX(12px); }
+  30% { transform: translateX(-10px); }
+  40% { transform: translateX(10px); }
+  50% { transform: translateX(-7px); }
+  60% { transform: translateX(7px); }
+  70% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+  90% { transform: translateX(-2px); }
+}
+
+/* ===== Para quien prefiere menos movimiento ===== */
 @media (prefers-reduced-motion: reduce) {
-  .secreto.reveal {
+  .secreto.reveal,
+  body main.vibrar,
+  body[data-nivel="dificil"] main,
+  body[data-nivel="dificil"] h1,
+  body[data-nivel="dificil"]::before {
     animation: none;
+  }
+
+  .efecto {
+    display: none;
+  }
+
+  .cartel {
+    animation-name: cartel-fade !important;
   }
 }
